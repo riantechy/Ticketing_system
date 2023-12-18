@@ -10,7 +10,6 @@ class Ticket(models.Model):
     priority = models.CharField(max_length=20)
     problem = models.TextField()
     contactPhone = models.CharField(max_length=15, blank=True, null=True)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE) 
     time_created = models.DateTimeField(auto_now_add=True)
     
 

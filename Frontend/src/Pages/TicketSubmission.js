@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Paper,
@@ -12,6 +12,7 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
+// import { useAuth } from './auth-context';
 
 const useStyles = {
   root: {
@@ -54,6 +55,16 @@ function TicketSubmission() {
     customerName: '',
   });
 
+  // const auth = useAuth(); // Get the authentication context
+
+  // useEffect(() => {
+  //   // Redirect to login if the user is not authenticated
+  //   if (!auth.isAuthenticated) {
+  //     // You can customize the redirection logic or show a login form
+  //     window.location.href = '/TicketList';
+  //   }
+  // }, [auth.isAuthenticated]);
+
   const handleInputChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
@@ -66,11 +77,32 @@ function TicketSubmission() {
     setState({ ...state, priority: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Your form submission logic here
+  
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/tickets/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(state),
+      });
+  
+      if (response.ok) {
+        console.log('Ticket submitted successfully');
+        // Reset form or handle success as needed
+      } else {
+        const errorData = await response.json(); // Try to parse error response
+        console.error('Failed to submit ticket:', errorData);
+        // Handle error and provide user feedback
+      }
+    } catch (error) {
+      console.error('Error submitting ticket:', error);
+      // Handle unexpected errors
+    }
   };
-
+  
   return (
     <div style={classes.root}>
       <CssBaseline />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Button,
@@ -28,42 +28,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { Link } from 'react-router-dom'; // Import Link from React Router
 
 const TicketList = () => {
-  // Sample ticket data (you can replace this with data from your backend)
-  const tickets = [
-    {
-      id: 1,
-      title: 'Ticket 1',
-      email: 'user1@example.com',
-      department: 'Support',
-      priority: 'High',
-      problem: 'Problem 1 details',
-      contactPhone: '123-456-7890',
-      customerName: 'Customer A',
-      time: '2023-01-01',
-    },
-    {
-      id: 2,
-      title: 'Ticket 2',
-      email: 'user2@example.com',
-      department: 'IT',
-      priority: 'Low',
-      problem: 'Problem 2 details',
-      contactPhone: '987-654-3210',
-      customerName: 'Customer B',
-      time: '2023-01-02',
-    },
-    {
-      id: 3,
-      title: 'Ticket 3',
-      email: 'user3@example.com',
-      department: 'HR',
-      priority: 'Medium',
-      problem: 'Problem 3 details',
-      contactPhone: '555-555-5555',
-      customerName: 'Customer C',
-      time: '2023-01-03',
-    },
-  ];
+  const [tickets, setTickets] = useState([]);
 
   const sidebarItems = [
     { text: 'Dashboard', icon: <InboxIcon /> },
@@ -77,19 +42,26 @@ const TicketList = () => {
     { text: 'Settings', icon: <SettingsIcon /> },
   ];
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/ticketslist/');
+        if (!response.ok) {
+          throw new Error('Failed to fetch tickets');
+        }
+        const data = await response.json();
+        setTickets(data);
+      } catch (error) {
+        console.error('Error fetching tickets:', error.message);
+      }
+    };
+
+    fetchData();
+  }, []); // Run the effect only once on mount
+
   return (
     <div style={{ display: 'flex' }}>
-      <CssBaseline />
-      <Drawer variant="permanent">
-        <List>
-          {sidebarItems.map((item, index) => (
-            <ListItem button key={item.text} component={Link} to={`/${item.text.toLowerCase()}`}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+      {/* ... (unchanged) */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Container maxWidth="lg">
           <div
@@ -133,7 +105,7 @@ const TicketList = () => {
                     <TableCell>{ticket.problem}</TableCell>
                     <TableCell>{ticket.contactPhone}</TableCell>
                     <TableCell>{ticket.customerName}</TableCell>
-                    <TableCell>{ticket.time}</TableCell>
+                    <TableCell>{ticket.time_created}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

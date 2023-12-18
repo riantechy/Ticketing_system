@@ -7,10 +7,6 @@ from rest_framework import generics
 class TicketListCreateView(ListAPIView, CreateAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
 class TicketDetailView(RetrieveAPIView):
     queryset = Ticket.objects.all()

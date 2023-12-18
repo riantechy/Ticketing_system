@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Paper, Typography, TextField, Button, Link } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const containerStyle = {
   display: 'flex',
@@ -20,15 +21,15 @@ const logoStyle = {
 };
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ username: '', password: '' });
   const [loginError, setLoginError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Basic form validation
-    if (!email || !password) {
+    if (!formData.username || !formData.password) {
       setLoginError('Please fill in all fields.');
       return;
     }
@@ -40,10 +41,7 @@ function Login() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
@@ -54,6 +52,9 @@ function Login() {
 
       // Handle successful login (e.g., redirect to another page)
       console.log('Login successful');
+
+       // Redirect the user to the "/tickets" page
+       navigate('/tickets');
     } catch (error) {
       console.error('Error during login:', error);
       setLoginError('An error occurred during login. Please try again.');
@@ -79,8 +80,9 @@ function Login() {
                 variant="outlined"
                 fullWidth
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="username" 
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
               />
             </div>
             <div style={{ marginBottom: '10px' }}>
@@ -89,8 +91,9 @@ function Login() {
                 variant="outlined"
                 fullWidth
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               />
             </div>
             <Button type="submit" variant="contained" color="primary">

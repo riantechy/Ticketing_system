@@ -42,7 +42,7 @@ const Register = () => {
     
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/register/', formData);
+      const response = await axios.post('http://127.0.0.1:8000/api/signup/', formData);
 
       if (response.status === 200) {
         // Registration was successful, add your success logic here
